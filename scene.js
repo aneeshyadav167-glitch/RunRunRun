@@ -1,88 +1,208 @@
 // ======================================
 // SCENE.JS
-// Creates Scene, Camera, Renderer & Light
+// Scene + Camera + Renderer
 // ======================================
 
-const container = document.getElementById("gameContainer");
+// ------------------------------
+// Container
+// ------------------------------
 
-// ---------- Scene ----------
+const game=document.getElementById("game");
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x87CEEB);
+// ------------------------------
+// Scene
+// ------------------------------
 
-// ---------- Camera ----------
+const scene=new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(
-    65,
-    container.clientWidth / container.clientHeight,
-    0.1,
-    1000
+scene.background=new THREE.Color(
+
+CONFIG.SKY_COLOR
+
 );
 
-camera.position.set(0, 6, 10);
-camera.lookAt(0, 1, 0);
+// ------------------------------
+// Camera
+// ------------------------------
 
-// ---------- Renderer ----------
+const camera=new THREE.PerspectiveCamera(
 
-const renderer = new THREE.WebGLRenderer({
-    antialias: true
+65,
+
+game.clientWidth/game.clientHeight,
+
+0.1,
+
+1000
+
+);
+
+camera.position.set(
+
+0,
+
+CONFIG.CAMERA_HEIGHT,
+
+CONFIG.CAMERA_DISTANCE
+
+);
+
+// ------------------------------
+// Renderer
+// ------------------------------
+
+const renderer=new THREE.WebGLRenderer({
+
+antialias:true,
+
+alpha:false
+
 });
 
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(
+
+Math.min(window.devicePixelRatio,2)
+
+);
 
 renderer.setSize(
-    container.clientWidth,
-    container.clientHeight
+
+game.clientWidth,
+
+game.clientHeight
+
 );
 
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled=true;
 
-container.appendChild(renderer.domElement);
+renderer.shadowMap.type=
 
-// ---------- Ambient Light ----------
+THREE.PCFSoftShadowMap;
 
-const ambientLight = new THREE.AmbientLight(
-    0xffffff,
-    1.2
+game.appendChild(
+
+renderer.domElement
+
 );
 
-scene.add(ambientLight);
+// ------------------------------
+// Ambient Light
+// ------------------------------
 
-// ---------- Sun Light ----------
+const ambientLight=
 
-const sun = new THREE.DirectionalLight(
-    0xffffff,
-    1.5
+new THREE.AmbientLight(
+
+0xffffff,
+
+CONFIG.AMBIENT_INTENSITY
+
 );
 
-sun.position.set(20, 30, 20);
+scene.add(
 
-sun.castShadow = true;
+ambientLight
 
-sun.shadow.mapSize.width = 2048;
-sun.shadow.mapSize.height = 2048;
+);
 
-scene.add(sun);
+// ------------------------------
+// Sun Light
+// ------------------------------
 
-// ---------- Resize ----------
+const sunLight=
 
-window.addEventListener("resize", () => {
+new THREE.DirectionalLight(
 
-    const w = container.clientWidth;
-    const h = container.clientHeight;
+0xffffff,
 
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
+CONFIG.SUN_INTENSITY
 
-    renderer.setSize(w, h);
+);
 
-});
+sunLight.position.set(
 
-// ---------- Export Globally ----------
+25,
 
-window.scene = scene;
-window.camera = camera;
-window.renderer = renderer;
-window.sun = sun;
-window.clock = new THREE.Clock();
+40,
+
+20
+
+);
+
+sunLight.castShadow=true;
+
+sunLight.shadow.mapSize.width=2048;
+
+sunLight.shadow.mapSize.height=2048;
+
+sunLight.shadow.camera.left=-50;
+
+sunLight.shadow.camera.right=50;
+
+sunLight.shadow.camera.top=50;
+
+sunLight.shadow.camera.bottom=-50;
+
+scene.add(
+
+sunLight
+
+);
+
+// ------------------------------
+// Resize
+// ------------------------------
+
+function resize(){
+
+const w=game.clientWidth;
+
+const h=game.clientHeight;
+
+camera.aspect=w/h;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(
+
+w,
+
+h
+
+);
+
+}
+
+window.addEventListener(
+
+"resize",
+
+resize
+
+);
+
+// ------------------------------
+// Clock
+// ------------------------------
+
+const clock=
+
+new THREE.Clock();
+
+// ------------------------------
+// Export
+// ------------------------------
+
+window.scene=scene;
+
+window.camera=camera;
+
+window.renderer=renderer;
+
+window.clock=clock;
+
+window.sunLight=sunLight;
+
+window.ambientLight=
+
+ambientLight;
