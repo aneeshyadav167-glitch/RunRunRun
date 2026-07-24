@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
 <title>Endless Runner</title>
 
@@ -14,7 +17,13 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 
 <body>
 
-<div id="gameUI">
+<!-- ========================= -->
+<!-- GAME CONTAINER -->
+<!-- ========================= -->
+
+<div id="game">
+
+<div id="hud">
 
 <div id="score">
 Score : 0
@@ -24,37 +33,68 @@ Score : 0
 Distance : 0 m
 </div>
 
+</div>
+
 <div id="gameOver">
 
 <h1>GAME OVER</h1>
 
+<p id="finalScore"></p>
+
 <button id="restartBtn">
+
 Restart
+
 </button>
 
 </div>
 
 </div>
 
-<div id="gameContainer"></div>
-
 <script type="module">
 
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js";
+/* -------------------------
+THREE JS
+-------------------------- */
 
-window.THREE = THREE;
+import * as THREE from
+
+"https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js";
+
+window.THREE=THREE;
+
+/* -------------------------
+CONFIG
+-------------------------- */
+
+import "./config.js";
+
+/* -------------------------
+CORE
+-------------------------- */
 
 import "./scene.js";
+
 import "./road.js";
+
 import "./city.js";
+
 import "./player.js";
-import "./objects.js";
+
 import "./controls.js";
+
+import "./objects.js";
+
 import "./collision.js";
+
 import "./score.js";
+
+import "./utils.js";
+
 import "./main.js";
 
 </script>
 
 </body>
+
 </html>
