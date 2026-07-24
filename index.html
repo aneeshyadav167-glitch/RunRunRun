@@ -1,29 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Temple Runner</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Endless Runner</title>
 
 <link rel="stylesheet" href="style.css">
-
-<script type="importmap">
-{
-"imports":{
-"three":"https://unpkg.com/three@0.165.0/build/three.module.js"
-}
-}
-</script>
 
 </head>
 
 <body>
 
-<div id="loading">
-Temple Runner Loading...
+<div id="gameUI">
+
+<div id="score">
+Score : 0
 </div>
 
-<script type="module" src="main.js"></script>
+<div id="distance">
+Distance : 0 m
+</div>
+
+<div id="gameOver">
+
+<h1>GAME OVER</h1>
+
+<button id="restartBtn">
+Restart
+</button>
+
+</div>
+
+</div>
+
+<div id="gameContainer"></div>
+
+<script type="module">
+
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js";
+
+window.THREE = THREE;
+
+import "./scene.js";
+import "./road.js";
+import "./city.js";
+import "./player.js";
+import "./objects.js";
+import "./controls.js";
+import "./collision.js";
+import "./score.js";
+import "./main.js";
+
+</script>
 
 </body>
 </html>
