@@ -7,7 +7,7 @@
 
 <meta
 name="viewport"
-content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Endless Runner</title>
 
@@ -17,61 +17,53 @@ content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no
 
 <body>
 
-<!-- ========================= -->
-<!-- GAME CONTAINER -->
-<!-- ========================= -->
-
 <div id="game">
 
-<div id="hud">
+    <!-- HUD -->
+    <div id="hud">
 
-<div id="score">
-Score : 0
-</div>
+        <div id="score">
+            Score : 0
+        </div>
 
-<div id="distance">
-Distance : 0 m
-</div>
+        <div id="distance">
+            Distance : 0 m
+        </div>
 
-</div>
+    </div>
 
-<div id="gameOver">
+    <!-- Game Over -->
+    <div id="gameOver">
 
-<h1>GAME OVER</h1>
+        <h1>GAME OVER</h1>
 
-<p id="finalScore"></p>
+        <p id="finalScore">
+            Score : 0
+        </p>
 
-<button id="restartBtn">
+        <button id="restartBtn">
+            Restart
+        </button>
 
-Restart
-
-</button>
-
-</div>
+    </div>
 
 </div>
 
 <script type="module">
 
-/* -------------------------
-THREE JS
--------------------------- */
+/* ===========================
+   THREE.JS
+=========================== */
 
-import * as THREE from
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js";
 
-"https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js";
+window.THREE = THREE;
 
-window.THREE=THREE;
-
-/* -------------------------
-CONFIG
--------------------------- */
+/* ===========================
+   GAME CORE
+=========================== */
 
 import "./config.js";
-
-/* -------------------------
-CORE
--------------------------- */
 
 import "./scene.js";
 
