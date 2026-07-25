@@ -1,35 +1,31 @@
-// ======================================
+// ======================================================
 // SCENE.JS
-// Scene + Camera + Renderer
-// ======================================
+// Scene + Camera + Renderer + Lights
+// ======================================================
 
-// ------------------------------
-// Container
-// ------------------------------
+window.Game = window.Game || {};
 
-const game=document.getElementById("game");
+const CONFIG = Game.CONFIG;
 
-// ------------------------------
+// ------------------------------------------------------
 // Scene
-// ------------------------------
+// ------------------------------------------------------
 
-const scene=new THREE.Scene();
+Game.scene = new THREE.Scene();
 
-scene.background=new THREE.Color(
-
+Game.scene.background = new THREE.Color(
 CONFIG.SKY_COLOR
-
 );
 
-// ------------------------------
+// ------------------------------------------------------
 // Camera
-// ------------------------------
+// ------------------------------------------------------
 
-const camera=new THREE.PerspectiveCamera(
+Game.camera = new THREE.PerspectiveCamera(
 
 65,
 
-game.clientWidth/game.clientHeight,
+9/16,
 
 0.1,
 
@@ -37,7 +33,7 @@ game.clientWidth/game.clientHeight,
 
 );
 
-camera.position.set(
+Game.camera.position.set(
 
 0,
 
@@ -47,81 +43,90 @@ CONFIG.CAMERA_DISTANCE
 
 );
 
-// ------------------------------
+// ------------------------------------------------------
 // Renderer
-// ------------------------------
+// ------------------------------------------------------
 
-const renderer=new THREE.WebGLRenderer({
+const container =
+document.getElementById("game");
+
+Game.renderer =
+new THREE.WebGLRenderer({
 
 antialias:true,
 
-alpha:false
+alpha:false,
+
+powerPreference:"high-performance"
 
 });
 
-renderer.setPixelRatio(
+Game.renderer.setPixelRatio(
 
-Math.min(window.devicePixelRatio,2)
-
-);
-
-renderer.setSize(
-
-game.clientWidth,
-
-game.clientHeight
+Math.min(
+window.devicePixelRatio,
+2
+)
 
 );
 
-renderer.shadowMap.enabled=true;
+Game.renderer.setSize(
 
-renderer.shadowMap.type=
+container.clientWidth,
+
+container.clientHeight
+
+);
+
+Game.renderer.shadowMap.enabled=true;
+
+Game.renderer.shadowMap.type=
 
 THREE.PCFSoftShadowMap;
 
-game.appendChild(
+container.appendChild(
 
-renderer.domElement
+Game.renderer.domElement
 
 );
 
-// ------------------------------
+// ------------------------------------------------------
 // Ambient Light
-// ------------------------------
+// ------------------------------------------------------
 
-const ambientLight=
+Game.ambientLight=
 
 new THREE.AmbientLight(
 
 0xffffff,
 
-CONFIG.AMBIENT_INTENSITY
+CONFIG.AMBIENT_LIGHT
 
 );
 
-scene.add(
+Game.scene.add(
 
-ambientLight
+Game.ambientLight
 
 );
 
-// ------------------------------
+// ------------------------------------------------------
 // Sun Light
-// ------------------------------
+// ------------------------------------------------------
 
-const sunLight=
+Game.sunLight=
 
 new THREE.DirectionalLight(
 
 0xffffff,
 
-CONFIG.SUN_INTENSITY
+CONFIG.SUN_LIGHT
 
 );
 
-sunLight.position.set(
+Game.sunLight.position.set(
 
-25,
+20,
 
 40,
 
@@ -129,41 +134,51 @@ sunLight.position.set(
 
 );
 
-sunLight.castShadow=true;
+Game.sunLight.castShadow=true;
 
-sunLight.shadow.mapSize.width=2048;
+Game.sunLight.shadow.mapSize.width=2048;
 
-sunLight.shadow.mapSize.height=2048;
+Game.sunLight.shadow.mapSize.height=2048;
 
-sunLight.shadow.camera.left=-50;
+Game.sunLight.shadow.camera.left=-60;
 
-sunLight.shadow.camera.right=50;
+Game.sunLight.shadow.camera.right=60;
 
-sunLight.shadow.camera.top=50;
+Game.sunLight.shadow.camera.top=60;
 
-sunLight.shadow.camera.bottom=-50;
+Game.sunLight.shadow.camera.bottom=-60;
 
-scene.add(
+Game.scene.add(
 
-sunLight
+Game.sunLight
 
 );
 
-// ------------------------------
+// ------------------------------------------------------
+// Clock
+// ------------------------------------------------------
+
+Game.clock=
+new THREE.Clock();
+
+// ------------------------------------------------------
 // Resize
-// ------------------------------
+// ------------------------------------------------------
 
-function resize(){
+function resizeGame(){
 
-const w=game.clientWidth;
+const w=
+container.clientWidth;
 
-const h=game.clientHeight;
+const h=
+container.clientHeight;
 
-camera.aspect=w/h;
+Game.camera.aspect=
+w/h;
 
-camera.updateProjectionMatrix();
+Game.camera.updateProjectionMatrix();
 
-renderer.setSize(
+Game.renderer.setSize(
 
 w,
 
@@ -177,32 +192,40 @@ window.addEventListener(
 
 "resize",
 
-resize
+resizeGame
 
 );
 
-// ------------------------------
-// Clock
-// ------------------------------
+// ------------------------------------------------------
+// Render
+// ------------------------------------------------------
 
-const clock=
+Game.render=function(){
 
-new THREE.Clock();
+Game.renderer.render(
 
-// ------------------------------
-// Export
-// ------------------------------
+Game.scene,
 
-window.scene=scene;
+Game.camera
 
-window.camera=camera;
+);
 
-window.renderer=renderer;
+};
 
-window.clock=clock;
+// ------------------------------------------------------
+// Helpers
+// ------------------------------------------------------
 
-window.sunLight=sunLight;
+Game.getDelta=function(){
 
-window.ambientLight=
+return Game.clock.getDelta();
 
-ambientLight;
+};
+
+// ------------------------------------------------------
+// Ready
+// ------------------------------------------------------
+
+console.log(
+"Scene Loaded"
+);
