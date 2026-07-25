@@ -1,138 +1,98 @@
-// ======================================
-// CONFIG.JS
-// Global Game Configuration
-// ======================================
+// =====================================================
+// CONFIG.JS (FINAL)
+// Global game configuration
+// =====================================================
 
 const CONFIG = {
 
-    // ----------------------------
-    // Screen
-    // ----------------------------
+  // -----------------------------
+  // Screen
+  // -----------------------------
+  ASPECT_WIDTH: 9,
+  ASPECT_HEIGHT: 16,
 
-    WIDTH: 9,
+  // -----------------------------
+  // Road
+  // -----------------------------
+  ROAD_WIDTH: 9,
+  LANE_COUNT: 3,
+  LANE_WIDTH: 3,
+  TILE_LENGTH: 24,
+  INITIAL_TILES: 14,
+  ROAD_SPEED: 0.32,
 
-    HEIGHT: 16,
+  // -----------------------------
+  // World
+  // -----------------------------
+  WORLD_FORWARD_Z: -24,
+  WORLD_RECYCLE_Z: 18,
 
-    // ----------------------------
-    // Road
-    // ----------------------------
+  // -----------------------------
+  // Player
+  // -----------------------------
+  PLAYER_START: { x: 0, y: 0, z: 6 },
+  LANE_CHANGE_SMOOTH: 0.18,
+  JUMP_FORCE: 0.36,
+  GRAVITY: 0.018,
 
-    ROAD_WIDTH: 9,
+  // -----------------------------
+  // Camera
+  // -----------------------------
+  CAMERA_HEIGHT: 6,
+  CAMERA_DISTANCE: 9,
+  CAMERA_LOOK_AHEAD: -8,
+  CAMERA_SMOOTH: 0.08,
 
-    LANE_COUNT: 3,
+  // -----------------------------
+  // Objects
+  // -----------------------------
+  OBJECT_SPACING: 8,
+  COIN_VALUE: 10,
+  COIN_CHANCE: 0.45,
+  STONE_CHANCE: 0.30,
+  GATE_CHANCE: 0.25,
 
-    LANE_WIDTH: 3,
+  // -----------------------------
+  // Buildings
+  // -----------------------------
+  BUILDING_MIN_H: 4,
+  BUILDING_MAX_H: 12,
+  BUILDING_MIN_W: 2,
+  BUILDING_MAX_W: 4,
+  BUILDING_DEPTH: 3,
+  CITY_OFFSET: 14,
 
-    TILE_LENGTH: 20,
+  // -----------------------------
+  // Lighting
+  // -----------------------------
+  AMBIENT_INTENSITY: 1.2,
+  SUN_INTENSITY: 1.5,
 
-    INITIAL_TILES: 18,
+  // -----------------------------
+  // Colors
+  // -----------------------------
+  SKY: 0x87CEEB,
+  ROAD: 0x3f3f3f,
+  GRASS: 0x43b556,
+  LINE: 0xffffff,
 
-    // ----------------------------
-    // Player
-    // ----------------------------
-
-    PLAYER_START_X: 0,
-
-    PLAYER_START_Y: 0,
-
-    PLAYER_START_Z: 6,
-
-    PLAYER_SPEED: 0.22,
-
-    LANE_CHANGE_SPEED: 0.18,
-
-    JUMP_FORCE: 0.34,
-
-    GRAVITY: 0.018,
-
-    // ----------------------------
-    // Camera
-    // ----------------------------
-
-    CAMERA_HEIGHT: 6,
-
-    CAMERA_DISTANCE: 9,
-
-    CAMERA_SMOOTH: 0.08,
-
-    // ----------------------------
-    // Objects
-    // ----------------------------
-
-    COIN_VALUE: 10,
-
-    OBJECT_DISTANCE: 8,
-
-    COIN_CHANCE: 0.45,
-
-    STONE_CHANCE: 0.30,
-
-    GATE_CHANCE: 0.25,
-
-    // ----------------------------
-    // Colors
-    // ----------------------------
-
-    SKY_COLOR: 0x87CEEB,
-
-    ROAD_COLOR: 0x404040,
-
-    GRASS_COLOR: 0x42b84f,
-
-    LINE_COLOR: 0xffffff,
-
-    // ----------------------------
-    // Buildings
-    // ----------------------------
-
-    BUILDING_MIN_HEIGHT:4,
-
-    BUILDING_MAX_HEIGHT:12,
-
-    BUILDING_MIN_WIDTH:2,
-
-    BUILDING_MAX_WIDTH:4,
-
-    // ----------------------------
-    // Lights
-    // ----------------------------
-
-    AMBIENT_INTENSITY:1.2,
-
-    SUN_INTENSITY:1.5,
-
-    // ----------------------------
-    // UI
-    // ----------------------------
-
-    START_SCORE:0,
-
-    START_DISTANCE:0
-
+  // -----------------------------
+  // UI
+  // -----------------------------
+  START_SCORE: 0,
+  START_DISTANCE: 0
 };
 
-// ======================================
-// Lane Positions
-// ======================================
-
-CONFIG.LANES=[
-
--CONFIG.LANE_WIDTH,
-
-0,
-
-CONFIG.LANE_WIDTH
-
+// Lane center positions
+CONFIG.LANES = [
+  -CONFIG.LANE_WIDTH,
+   0,
+   CONFIG.LANE_WIDTH
 ];
 
-// ======================================
-// Freeze Config
-// ======================================
-
+// Freeze to avoid accidental changes
 Object.freeze(CONFIG);
 
-// ======================================
-// Export
-// ======================================
-
-window.CONFIG=CONFIG;
+// Global namespace (single source of truth)
+window.Game = window.Game || {};
+window.Game.CONFIG = CONFIG;
