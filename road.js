@@ -1,141 +1,221 @@
-// ======================================
+// ======================================================
 // ROAD.JS
-// 3 Lane Road Generator
-// ======================================
+// Part 1 / 6
+// Road Materials + Road Tile + Lane Lines
+// ======================================================
 
-const ROAD_WIDTH = 9;
-const LANE_WIDTH = 3;
+window.Game = window.Game || {};
 
-const TILE_LENGTH = 30;
-const TILE_COUNT = 20;
+const CONFIG = Game.CONFIG;
 
-const roadTiles = [];
+Game.Road = {};
 
-// ---------- Materials ----------
+Game.Road.tiles = [];
 
-const roadMaterial = new THREE.MeshLambertMaterial({
-    color:0x3a3a3a
+Game.Road.material = new THREE.MeshLambertMaterial({
+
+    color:CONFIG.ROAD_COLOR
+
 });
 
-const sideMaterial = new THREE.MeshLambertMaterial({
-    color:0x3dbb57
+Game.Road.grassMaterial = new THREE.MeshLambertMaterial({
+
+    color:CONFIG.GRASS_COLOR
+
 });
 
-const lineMaterial = new THREE.MeshLambertMaterial({
-    color:0xffffff
+Game.Road.lineMaterial = new THREE.MeshLambertMaterial({
+
+    color:CONFIG.LINE_COLOR
+
 });
 
-// ---------- Create Tile ----------
+// ------------------------------------------------------
+// Create Single Road Tile
+// ------------------------------------------------------
 
-function createRoadTile(z){
+Game.Road.createTile=function(z){
 
-    const group = new THREE.Group();
+const group=new THREE.Group();
 
-    // Road
+// ----------------------
+// Road
+// ----------------------
 
-    const road = new THREE.Mesh(
+const road=new THREE.Mesh(
 
-        new THREE.BoxGeometry(
-            ROAD_WIDTH,
-            0.2,
-            TILE_LENGTH
-        ),
+new THREE.BoxGeometry(
 
-        roadMaterial
+CONFIG.ROAD_WIDTH,
 
-    );
+0.2,
 
-    road.receiveShadow = true;
+CONFIG.TILE_LENGTH
 
-    group.add(road);
+),
 
-    // Left Grass
+Game.Road.material
 
-    const leftGrass = new THREE.Mesh(
+);
 
-        new THREE.BoxGeometry(
-            20,
-            0.18,
-            TILE_LENGTH
-        ),
+road.receiveShadow=true;
 
-        sideMaterial
+group.add(road);
 
-    );
+// ----------------------
+// Left Grass
+// ----------------------
 
-    leftGrass.position.x = -14.5;
+const grassLeft=new THREE.Mesh(
 
-    group.add(leftGrass);
+new THREE.BoxGeometry(
 
-    // Right Grass
+18,
 
-    const rightGrass = leftGrass.clone();
+0.1,
 
-    rightGrass.position.x = 14.5;
+CONFIG.TILE_LENGTH
 
-    group.add(rightGrass);
+),
 
-    // Lane Line Left
+Game.Road.grassMaterial
 
-    const line1 = new THREE.Mesh(
+);
 
-        new THREE.BoxGeometry(
-            0.12,
-            0.03,
-            2
-        ),
+grassLeft.position.x=
 
-        lineMaterial
+-13.5;
 
-    );
+grassLeft.position.y=
 
-    // Lane Line Right
+-0.05;
 
-    const line2 = line1.clone();
+group.add(
 
-    line1.position.x = -1.5;
-    line2.position.x = 1.5;
+grassLeft
 
-    // Broken Lines
+);
 
-    for(let i=-14;i<=14;i+=4){
+// ----------------------
+// Right Grass
+// ----------------------
 
-        const a=line1.clone();
-        a.position.z=i;
-        group.add(a);
+const grassRight=
 
-        const b=line2.clone();
-        b.position.z=i;
-        group.add(b);
+grassLeft.clone();
 
-    }
+grassRight.position.x=
 
-    group.position.z = z;
+13.5;
 
-    scene.add(group);
+group.add(
 
-    roadTiles.push(group);
+grassRight
+
+);
+
+// ------------------------------------------------------
+// Lane Markings
+// ------------------------------------------------------
+
+const lineGeometry=
+
+new THREE.BoxGeometry(
+
+0.15,
+
+0.03,
+
+2
+
+);
+
+for(
+
+let lane=1;
+
+lane<CONFIG.LANE_COUNT;
+
+lane++
+
+){
+
+const divider=
+
+new THREE.Mesh(
+
+lineGeometry,
+
+Game.Road.lineMaterial
+
+);
+
+divider.position.x=
+
+-CONFIG.ROAD_WIDTH/2+
+
+lane*
+
+CONFIG.LANE_WIDTH;
+
+divider.position.y=
+
+0.12;
+
+divider.position.z=
+
+-8;
+
+group.add(
+
+divider
+
+);
+
+const divider2=
+
+divider.clone();
+
+divider2.position.z=
+
+0;
+
+group.add(
+
+divider2
+
+);
+
+const divider3=
+
+divider.clone();
+
+divider3.position.z=
+
+8;
+
+group.add(
+
+divider3
+
+);
 
 }
 
-// ---------- Initial Road ----------
+group.position.z=z;
 
-for(let i=0;i<TILE_COUNT;i++){
+Game.scene.add(
 
-    createRoadTile(
-        -i*TILE_LENGTH
-    );
+group
 
-}
+);
 
-// ---------- Export ----------
+Game.Road.tiles.push(
 
-window.roadTiles = roadTiles;
+group
 
-window.ROAD_WIDTH = ROAD_WIDTH;
+);
 
-window.LANE_WIDTH = LANE_WIDTH;
+return group;
 
-window.TILE_LENGTH = TILE_LENGTH;
-
-window.TILE_COUNT = TILE_COUNT;
+};
