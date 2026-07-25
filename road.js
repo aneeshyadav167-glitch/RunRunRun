@@ -622,3 +622,158 @@ Game.STATE.speed
 Game.Road.recycle();
 
 };
+// ------------------------------------------------------
+// Enable Shadows
+// ------------------------------------------------------
+
+Game.Road.enableShadows=function(){
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+Game.Road.tiles[i].traverse(function(child){
+
+if(child.isMesh){
+
+child.receiveShadow=true;
+
+child.castShadow=false;
+
+}
+
+});
+
+}
+
+};
+
+// ------------------------------------------------------
+// Set Road Speed
+// ------------------------------------------------------
+
+Game.Road.setSpeed=function(speed){
+
+Game.STATE.speed=speed;
+
+};
+
+// ------------------------------------------------------
+// Get Road Speed
+// ------------------------------------------------------
+
+Game.Road.getSpeed=function(){
+
+return Game.STATE.speed;
+
+};
+
+// ------------------------------------------------------
+// Pause Road
+// ------------------------------------------------------
+
+Game.Road.pause=function(){
+
+Game.STATE.running=false;
+
+};
+
+// ------------------------------------------------------
+// Resume Road
+// ------------------------------------------------------
+
+Game.Road.resume=function(){
+
+Game.STATE.running=true;
+
+};
+
+// ------------------------------------------------------
+// Reset Speed
+// ------------------------------------------------------
+
+Game.Road.resetSpeed=function(){
+
+Game.STATE.speed=
+
+CONFIG.WORLD_SPEED;
+
+};
+
+// ------------------------------------------------------
+// Increase Speed Slowly
+// ------------------------------------------------------
+
+Game.Road.increaseSpeed=function(){
+
+if(
+
+Game.STATE.speed<
+
+CONFIG.MAX_WORLD_SPEED
+
+){
+
+Game.STATE.speed+=
+
+CONFIG.SPEED_INCREMENT;
+
+}
+
+};
+
+// ------------------------------------------------------
+// Main Update
+// ------------------------------------------------------
+
+Game.Road.tick=function(){
+
+if(
+
+!Game.STATE.running
+
+){
+
+return;
+
+}
+
+Game.Road.increaseSpeed();
+
+Game.Road.update();
+
+};
+
+// ------------------------------------------------------
+// Dispose
+// ------------------------------------------------------
+
+Game.Road.dispose=function(){
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+Game.scene.remove(
+
+Game.Road.tiles[i]
+
+);
+
+}
+
+Game.Road.tiles=[];
+
+};
