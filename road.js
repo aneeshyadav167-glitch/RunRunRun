@@ -334,3 +334,130 @@ Game.STATE.speed
 Game.Road.recycle();
 
 };
+// ------------------------------------------------------
+// Road Reset
+// ------------------------------------------------------
+
+Game.Road.reset=function(){
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+Game.Road.tiles[i].position.z=
+
+-i*
+
+CONFIG.TILE_LENGTH;
+
+}
+
+};
+
+// ------------------------------------------------------
+// Get Tile By Index
+// ------------------------------------------------------
+
+Game.Road.getTile=function(index){
+
+return Game.Road.tiles[index];
+
+};
+
+// ------------------------------------------------------
+// Get Total Tiles
+// ------------------------------------------------------
+
+Game.Road.count=function(){
+
+return Game.Road.tiles.length;
+
+};
+
+// ------------------------------------------------------
+// Add Road To Scene
+// ------------------------------------------------------
+
+Game.Road.addAll=function(){
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+if(
+
+!Game.scene.children.includes(
+
+Game.Road.tiles[i]
+
+)
+
+){
+
+Game.scene.add(
+
+Game.Road.tiles[i]
+
+);
+
+}
+
+}
+
+};
+
+// ------------------------------------------------------
+// Remove All Tiles
+// ------------------------------------------------------
+
+Game.Road.removeAll=function(){
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+Game.scene.remove(
+
+Game.Road.tiles[i]
+
+);
+
+}
+
+};
+
+// ------------------------------------------------------
+// Initialize Road
+// ------------------------------------------------------
+
+Game.Road.init=function(){
+
+Game.Road.createInitial();
+
+Game.Road.addAll();
+
+};
+
+console.log(
+
+"Road System Ready"
+
+);
