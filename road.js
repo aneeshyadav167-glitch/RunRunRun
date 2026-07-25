@@ -219,3 +219,118 @@ group
 return group;
 
 };
+// ------------------------------------------------------
+// Create Initial Road
+// ------------------------------------------------------
+
+Game.Road.createInitial=function(){
+
+Game.Road.tiles=[];
+
+for(
+
+let i=0;
+
+i<CONFIG.ROAD_TILE_COUNT;
+
+i++
+
+){
+
+Game.Road.createTile(
+
+-i*CONFIG.TILE_LENGTH
+
+);
+
+}
+
+};
+
+// ------------------------------------------------------
+// Get Last Tile
+// ------------------------------------------------------
+
+Game.Road.getLastTile=function(){
+
+return Game.Road.tiles[
+Game.Road.tiles.length-1
+];
+
+};
+
+// ------------------------------------------------------
+// Move Road
+// ------------------------------------------------------
+
+Game.Road.move=function(speed){
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+Game.Road.tiles[i].position.z+=speed;
+
+}
+
+};
+
+// ------------------------------------------------------
+// Recycle Tiles
+// ------------------------------------------------------
+
+Game.Road.recycle=function(){
+
+const first=
+
+Game.Road.tiles[0];
+
+if(
+
+first.position.z>
+
+CONFIG.TILE_LENGTH
+
+){
+
+const last=
+
+Game.Road.getLastTile();
+
+first.position.z=
+
+last.position.z-
+
+CONFIG.TILE_LENGTH;
+
+Game.Road.tiles.push(
+
+Game.Road.tiles.shift()
+
+);
+
+}
+
+};
+
+// ------------------------------------------------------
+// Update
+// ------------------------------------------------------
+
+Game.Road.update=function(){
+
+Game.Road.move(
+
+Game.STATE.speed
+
+);
+
+Game.Road.recycle();
+
+};
