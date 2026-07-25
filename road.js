@@ -461,3 +461,164 @@ console.log(
 "Road System Ready"
 
 );
+// ------------------------------------------------------
+// Get Road Width
+// ------------------------------------------------------
+
+Game.Road.getWidth=function(){
+
+return CONFIG.ROAD_WIDTH;
+
+};
+
+// ------------------------------------------------------
+// Get Lane Position
+// ------------------------------------------------------
+
+Game.Road.getLanePosition=function(lane){
+
+return Game.LANES[lane];
+
+};
+
+// ------------------------------------------------------
+// Is Position On Road
+// ------------------------------------------------------
+
+Game.Road.isOnRoad=function(x){
+
+return (
+
+x>=-(CONFIG.ROAD_WIDTH/2)
+
+&&
+
+x<=(CONFIG.ROAD_WIDTH/2)
+
+);
+
+};
+
+// ------------------------------------------------------
+// Get Tile From Z Position
+// ------------------------------------------------------
+
+Game.Road.getTileFromZ=function(z){
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+const tile=
+
+Game.Road.tiles[i];
+
+const min=
+
+tile.position.z-
+
+(CONFIG.TILE_LENGTH/2);
+
+const max=
+
+tile.position.z+
+
+(CONFIG.TILE_LENGTH/2);
+
+if(
+
+z>=min
+
+&&
+
+z<=max
+
+){
+
+return tile;
+
+}
+
+}
+
+return null;
+
+};
+
+// ------------------------------------------------------
+// Future Object Spawn Hook
+// ------------------------------------------------------
+
+Game.Road.spawnHook=function(tile){
+
+// Coins, Stones and Gates
+// will be attached here
+// by objects.js
+
+};
+
+// ------------------------------------------------------
+// Call Spawn Hook After Recycle
+// ------------------------------------------------------
+
+Game.Road.recycle=function(){
+
+const first=
+
+Game.Road.tiles[0];
+
+if(
+
+first.position.z>
+
+CONFIG.TILE_LENGTH
+
+){
+
+const last=
+
+Game.Road.getLastTile();
+
+first.position.z=
+
+last.position.z-
+
+CONFIG.TILE_LENGTH;
+
+Game.Road.tiles.push(
+
+Game.Road.tiles.shift()
+
+);
+
+Game.Road.spawnHook(
+
+first
+
+);
+
+}
+
+};
+
+// ------------------------------------------------------
+// Update Road
+// ------------------------------------------------------
+
+Game.Road.update=function(){
+
+Game.Road.move(
+
+Game.STATE.speed
+
+);
+
+Game.Road.recycle();
+
+};
