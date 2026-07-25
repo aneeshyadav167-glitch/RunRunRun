@@ -777,3 +777,124 @@ Game.Road.tiles[i]
 Game.Road.tiles=[];
 
 };
+// ------------------------------------------------------
+// Initialize Road System
+// ------------------------------------------------------
+
+Game.Road.start=function(){
+
+Game.Road.createInitial();
+
+Game.Road.enableShadows();
+
+};
+
+// ------------------------------------------------------
+// Restart Road
+// ------------------------------------------------------
+
+Game.Road.restart=function(){
+
+Game.Road.dispose();
+
+Game.Road.resetSpeed();
+
+Game.Road.createInitial();
+
+Game.Road.enableShadows();
+
+};
+
+// ------------------------------------------------------
+// Get Nearest Tile
+// ------------------------------------------------------
+
+Game.Road.getNearestTile=function(){
+
+let nearest=null;
+
+let distance=Infinity;
+
+for(
+
+let i=0;
+
+i<Game.Road.tiles.length;
+
+i++
+
+){
+
+const tile=
+
+Game.Road.tiles[i];
+
+const d=
+
+Math.abs(
+
+tile.position.z
+
+);
+
+if(
+
+d<distance
+
+){
+
+distance=d;
+
+nearest=tile;
+
+}
+
+}
+
+return nearest;
+
+};
+
+// ------------------------------------------------------
+// Update Every Frame
+// ------------------------------------------------------
+
+Game.Road.frame=function(){
+
+if(
+
+!Game.STATE.running
+
+){
+
+return;
+
+}
+
+Game.Road.tick();
+
+};
+
+// ------------------------------------------------------
+// Auto Initialize
+// ------------------------------------------------------
+
+Game.Road.start();
+
+// ------------------------------------------------------
+// Export
+// ------------------------------------------------------
+
+window.Game.Road=
+
+Game.Road;
+
+// ------------------------------------------------------
+// Ready
+// ------------------------------------------------------
+
+console.log(
+
+"road.js loaded successfully"
+
+);
