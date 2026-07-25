@@ -20,7 +20,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
-        /* Strict 9:16 Vertical Screen Canvas */
         #game-container {
             position: relative;
             width: min(100vw, calc(100vh * (9 / 16)));
@@ -34,7 +33,6 @@
             height: 100%;
             display: block;
         }
-        /* UI Overlay */
         #ui {
             position: absolute;
             top: 15px;
@@ -188,24 +186,27 @@ const chunks = [];
 let obstacles = [];
 let coins = [];
 
-function spawnItemsForChunk(zPos) {
-    for (let z = -chunkLength / 2; z < chunkLength / 2; z += 10) {
+function spawnItemsForZ(centerZ) {
+    for (let z = centerZ - chunkLength / 2; z < centerZ + chunkLength / 2; z += 12) {
+        // Player start point safe zone
+        if (Math.abs(z) < 15) continue;
+
         if (Math.random() > 0.3) {
             const lane = Math.floor(Math.random() * 3);
             const type = Math.random();
 
             if (type < 0.4) {
-                // Stone/Box Obstacle
+                // Red Barrier / Box Obstacle
                 const obsGeo = new THREE.BoxGeometry(1.2, 1, 1.2);
                 const obsMat = new THREE.MeshLambertMaterial({ color: 0xe74c3c });
                 const obs = new THREE.Mesh(obsGeo, obsMat);
-                obs.position.set(LANES[lane], 0.5, zPos + z);
+                obs.position.set(LANES[lane], 0.5, z);
                 obs.castShadow = true;
                 scene.add(obs);
                 obstacles.push(obs);
             } 
             else if (type < 0.7) {
-                // Gate (Jump under/dodge)
+                // Gate
                 const gateGroup = new THREE.Group();
                 const frameMat = new THREE.MeshLambertMaterial({ color: 0xf1c40f });
                 
@@ -217,7 +218,7 @@ function spawnItemsForChunk(zPos) {
                 topBar.position.set(0, 1.8, 0);
 
                 gateGroup.add(p1, p2, topBar);
-                gateGroup.position.set(LANES[lane], 0, zPos + z);
+                gateGroup.position.set(LANES[lane], 0, z);
                 scene.add(gateGroup);
                 obstacles.push(gateGroup);
             } 
@@ -227,7 +228,7 @@ function spawnItemsForChunk(zPos) {
                 const coinMat = new THREE.MeshLambertMaterial({ color: 0xffd700 });
                 const coin = new THREE.Mesh(coinGeo, coinMat);
                 coin.rotation.x = Math.PI / 2;
-                coin.position.set(LANES[lane], 0.8, zPos + z);
+                coin.position.set(LANES[lane], 0.8, z);
                 scene.add(coin);
                 coins.push(coin);
             }
@@ -269,7 +270,7 @@ function createChunk(zPos) {
         });
     }
 
-    // Buildings with Windows & Street Lights
+    // Buildings & Streetlights
     for (let z = -chunkLength / 2 + 5; z < chunkLength / 2; z += 12) {
         [-8, 8].forEach(x => {
             const h = 8 + Math.random() * 12;
@@ -281,7 +282,7 @@ function createChunk(zPos) {
             building.position.set(x, h / 2, z);
             building.castShadow = true;
 
-            // Windows Logic
+            // Windows
             const winMat = new THREE.MeshBasicMaterial({ color: 0xfff0a5 });
             for(let wy = 2; wy < h - 1; wy += 2) {
                 const win = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 1), winMat);
@@ -310,7 +311,6 @@ function createChunk(zPos) {
             top.position.set(idx === 0 ? 0.3 : -0.3, 3, 0);
             lightGroup.add(top);
 
-            // Light Bulb (Glows at Night)
             const bulb = new THREE.Mesh(
                 new THREE.SphereGeometry(0.15),
                 new THREE.MeshBasicMaterial({ color: 0xffffaa })
@@ -326,11 +326,11 @@ function createChunk(zPos) {
     scene.add(chunk);
     chunks.push(chunk);
 
-    // Spawn Coins and Obstacles for initial generation
-    spawnItemsForChunk(zPos);
+    // Initial items spawn
+    spawnItemsForZ(zPos);
 }
 
-// Initial Chunks
+// Initial Chunks Creation
 for (let i = 0; i < 4; i++) {
     createChunk(-i * chunkLength);
 }
@@ -376,11 +376,11 @@ function animate() {
 
     requestAnimationFrame(animate);
 
-    // Smooth Lane Switch
+    // Smooth Lane Switching
     targetX = LANES[currentLane];
     playerGroup.position.x += (targetX - playerGroup.position.x) * 0.2;
 
-    // Jump Physics
+    // Jump Logic
     if (isJumping) {
         playerGroup.position.y += jumpVelocity;
         jumpVelocity -= gravity;
@@ -390,33 +390,34 @@ function animate() {
         }
     }
 
-    // --- SPEED BOOST EVERY 500m ---
+    // Speed increase every 500m
     const speedMultiplier = 1 + Math.floor(distance / 500) * 0.15;
     speed = baseSpeed * speedMultiplier;
 
     distance += speed * 0.2;
     document.getElementById('distance').innerText = Math.floor(distance);
 
-    // --- DAY / NIGHT CYCLE (EVERY 300m) ---
+    // Day / Night Cycle (Every 300m)
     const cycle = (distance % 600) / 600; 
-    let factor = Math.sin(cycle * Math.PI * 2) * 0.5 + 0.5; // Smooth 0 to 1 back to 0
+    let factor = Math.sin(cycle * Math.PI * 2) * 0.5 + 0.5;
 
     scene.background.lerpColors(daySkyColor, nightSkyColor, factor);
     scene.fog.color.lerpColors(daySkyColor, nightSkyColor, factor);
     ambientLight.intensity = THREE.MathUtils.lerp(0.6, 0.15, factor);
     dirLight.intensity = THREE.MathUtils.lerp(0.8, 0.1, factor);
 
-    // Continuous Chunks & Recycling
+    // Infinite Road Logic & Spawn Control
     chunks.forEach(chunk => {
         chunk.position.z += speed;
         if (chunk.position.z > chunkLength) {
+            // Move chunk to far front
             chunk.position.z -= chunkLength * chunks.length;
-            // Spawn fresh items for reused chunk
-            spawnItemsForChunk(chunk.position.z);
+            // Spawn items for new position in front
+            spawnItemsForZ(chunk.position.z);
         }
     });
 
-    // Move & Check Obstacles
+    // Move & Collision Check: Obstacles
     for (let i = obstacles.length - 1; i >= 0; i--) {
         const obs = obstacles[i];
         obs.position.z += speed;
@@ -428,13 +429,14 @@ function animate() {
             triggerGameOver();
         }
 
-        if (obs.position.z > 10) {
+        // Remove old obstacles
+        if (obs.position.z > 15) {
             scene.remove(obs);
             obstacles.splice(i, 1);
         }
     }
 
-    // Move & Check Coins
+    // Move & Collision Check: Coins
     for (let i = coins.length - 1; i >= 0; i--) {
         const coin = coins[i];
         coin.position.z += speed;
@@ -448,13 +450,13 @@ function animate() {
             document.getElementById('score').innerText = score;
             scene.remove(coin);
             coins.splice(i, 1);
-        } else if (coin.position.z > 10) {
+        } else if (coin.position.z > 15) {
             scene.remove(coin);
             coins.splice(i, 1);
         }
     }
 
-    // Camera Follow
+    // Camera Positioning
     camera.position.set(playerGroup.position.x * 0.3, 3.5, 6);
     camera.lookAt(playerGroup.position.x * 0.3, 1, -10);
 
@@ -482,10 +484,16 @@ function restartGame() {
     document.getElementById('distance').innerText = '0';
     document.getElementById('game-over-screen').classList.add('hidden');
 
+    // Clean active items
     obstacles.forEach(o => scene.remove(o));
     coins.forEach(c => scene.remove(c));
     obstacles.length = 0;
     coins.length = 0;
+
+    // Initial Spawning
+    for (let i = 0; i < 4; i++) {
+        spawnItemsForZ(-i * chunkLength);
+    }
 
     animate();
 }
